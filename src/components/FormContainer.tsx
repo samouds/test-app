@@ -1,34 +1,24 @@
 import { ElementTypes } from '../config/Constants';
 import TextProperties from './TextProperties';
+import { useDndStore } from '@/store/dnd';
 
-type Props = {
-  selectedItem?: {
-    fontSize: number;
-    color: string;
-    type: string;
-    id: number;
-  } | null;
-  onChange?: (item: {
-    id: number;
-    type?: string;
-    top?: number | string;
-    left?: number | string;
-    position?: string;
-  }) => void;
-};
+const FormContainer = () => {
+  const {
+    items,
+    selectedId
+  } = useDndStore()
 
-const FormContainer = (props: Props) => {
-  const { selectedItem, onChange } = props;
-
+  const selectedItem = selectedId ? items.find(({ id }) => id === selectedId): null
+ 
   if (selectedItem !== undefined && selectedItem !== null) {
     switch (selectedItem.type) {
       case ElementTypes.TEXT:
-        return <TextProperties onChange={onChange} selectedItem={selectedItem} />;
+        return <TextProperties selectedItem={selectedItem} />;
       default:
-        return null;
+        return <div>Image selected</div>;
     }
   } else {
-    return null;
+    return <div className="ml-4">No text selected</div>;
   }
 };
 
