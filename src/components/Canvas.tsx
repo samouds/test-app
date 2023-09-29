@@ -78,6 +78,7 @@ const Canvas = () => {
       >
         <Button
           className="bg-blue-500 hover:bg-blue-700"
+          disabled={!items.length}
         >
           <a
             href={`data:text/json;charset=utf-8,${encodeURIComponent(configJSON)}`}
@@ -106,6 +107,11 @@ const Canvas = () => {
           />
         ))}
       </div>
+      {
+        !items.length ?
+        <div className="absolute left-[25%] top-[40%]">Drop item on the left menu here</div>
+        : ''
+      }
       <aside id="form-editor" className="flex flex-col w-4/12 gap-2 p-2">
         <Label className="m-4 text-xl">Editor</Label>
         <FormContainer/>

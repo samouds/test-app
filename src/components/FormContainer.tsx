@@ -15,10 +15,10 @@ const FormContainer = () => {
       case ElementTypes.TEXT:
         return <TextProperties selectedItem={selectedItem} />;
       default:
-        return null;
+        return <div>Image selected</div>;
     }
   } else {
-    return null;
+    return <div className="ml-4">No text selected</div>;
   }
 };
 
