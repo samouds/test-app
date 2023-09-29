@@ -1,0 +1,16 @@
+[{
+  "id": 1,
+  "top": 97,
+  "left": 337,
+  "position": "absolute",
+  "type": "image",
+  "alt": "Some Image"
+}, {
+  "id": 2,
+  "top": 194,
+  "left": 291,
+  "position": "absolute",
+  "type": "text",
+  "fontSize": 20,
+  "color": "red"
+}]

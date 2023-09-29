@@ -1,15 +1,24 @@
-import { FormEventHandler, SetStateAction, useRef, useState } from 'react';
+import { FormEventHandler, useRef } from 'react';
 
-import { DefaultItemProps, ElementTypes } from '../config/Constants';
+import { ElementTypes } from '../config/Constants';
 import { useDrop } from 'react-dnd';
-import Container from './Container';
+import Container from '@/components/Container';
 import FormContainer from './FormContainer';
+import { Button } from '@/components/ui/button';
+import { Input } from './ui/input';
+import { useDndStore } from '@/store/dnd';
+import { Label } from './ui/label';
 
 const Canvas = () => {
   const dropbox = useRef(null);
-  const incrementor = useRef(1);
-  const [selectedId, onSelected] = useState(null);
-  const [items, setItems] = useState([]);
+  // const incrementor = useRef(1);
+  // const [selectedId, onSelected] = useState(null);
+  // const [items, setItems] = useState([]);
+  const {
+    items,
+    setItems,
+    updateItems,
+  } = useDndStore()
   const [, drop] = useDrop(() => ({
     accept: [ElementTypes.TEXT, ElementTypes.IMAGE],
     drop: (item: { id: number }, monitor) => {
@@ -43,35 +52,6 @@ const Canvas = () => {
       });
     },
   }));
-  const selectedItem = selectedId ? items.find(({ id }) => id === selectedId) : null;
-  const updateItems: (item: {
-    id: number;
-    text?: string;
-    type?: string;
-    top?: number | string;
-    left?: number | string;
-    position?: string;
-  }) => void = (item) => {
-    setItems((items) => {
-      const list = [...items];
-      if (item.id === null) {
-        const newItem = {
-          ...item,
-          id: incrementor.current++,
-          ...DefaultItemProps[item.type as string],
-        };
-        list.push(newItem as never);
-      } else {
-        const index: number = list.findIndex(({ id }) => id === item.id);
-        const newItem = {
-          ...(list[index] as object),
-          ...item,
-        };
-        list[index] = newItem as never;
-      }
-      return list;
-    });
-  };
 
   const configJSON = JSON.stringify(items);
   const handleFileUpload: FormEventHandler = (e) => {
@@ -88,46 +68,47 @@ const Canvas = () => {
       console.log(reader.error);
     };
   };
-  const handleSelect: (id: null | number) => void = (id) => {
-    onSelected(id as SetStateAction<null>);
-  };
 
   return (
     <div ref={dropbox} className="relative flex flex-row">
       <div
         id="canvas"
         ref={drop}
-        className="w-8/12 flex flex-row content-start p-3 gap-3 flex-wrap min-h-screen border-[2px]"
+        className="w-8/12 flex flex-row content-start items-center p-3 gap-3 flex-wrap min-h-screen border-[2px]"
       >
-        <a
-          href={`data:text/json;charset=utf-8,${encodeURIComponent(configJSON)}`}
-          download="config-json.json"
-          className="block h-10 px-4 py-2 text-gray-200 bg-blue-500"
+        <Button
+          className="bg-blue-500 hover:bg-blue-700"
         >
-          Download JSON
-        </a>
+          <a
+            href={`data:text/json;charset=utf-8,${encodeURIComponent(configJSON)}`}
+            download="config-json.json"
+          >
+            Download JSON
+          </a>
+        </Button>
         <form
-          className="border-[1px] border-blue-300 block h-10"
+          className="border-[1px] border-blue-300 block h-12 p-[3px] rounded-lg"
           method="post"
           onSubmit={handleFileUpload}
         >
-          <input type="file" name="configJson" accept=".json" />
-          <button className="px-4 py-2 text-gray-200 bg-blue-600" type="submit">
-            Save
-          </button>
+          <Input type="file" className="inline-block w-auto border-0 cursor-pointer" name="configJson" accept=".json" />
+          <Button
+            className="inline-block my-auto bg-blue-600 hover:bg-blue-700"
+            type="submit"
+          >
+            Import
+          </Button>
         </form>
         {items.map((item) => (
           <Container
-            onChange={updateItems}
-            onSelected={handleSelect}
-            selectedId={selectedId}
             key={(item as { id: number }).id}
             {...(item as object)}
           />
         ))}
       </div>
       <aside id="form-editor" className="flex flex-col w-4/12 gap-2 p-2">
-        <FormContainer onChange={updateItems} selectedItem={selectedItem} />
+        <Label className="m-4 text-xl">Editor</Label>
+        <FormContainer/>
       </aside>
     </div>
   );

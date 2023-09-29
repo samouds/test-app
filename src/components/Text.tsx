@@ -2,6 +2,9 @@ import { ChangeEventHandler, useRef } from 'react';
 import { ElementTypes } from '../config/Constants';
 import { ConnectDragPreview, ConnectDragSource, useDrag } from 'react-dnd';
 import useOnClickOutsideCanvas from '../hooks/useOnClickOutsideCanvas';
+import { Label } from './ui/label';
+import { Input } from './ui/input';
+import { useDndStore } from '@/store/dnd';
 
 type Props = {
   fontSize?: number;
@@ -32,11 +35,14 @@ const Text = (props: Props) => {
     color = 'blue',
     text = 'The Quick Brown Fox',
     left = 'auto',
-    selectedId,
-    onSelected,
     top = 'auto',
-    onChange,
   } = props;
+  const {
+    updateItems: onChange,
+    selectedId,
+    handleSelect: onSelected
+  } = useDndStore()
+
   const [{ isDragging }, drag]: [{ isDragging: boolean }, ConnectDragSource, ConnectDragPreview] =
     useDrag(() => ({
       type: ElementTypes.TEXT,
@@ -82,22 +88,24 @@ const Text = (props: Props) => {
         position: position,
         left: left,
         top: top,
+        borderRadius: '8px'
       }}
     >
       <div ref={wrapRef}>
         {isSelected ? (
-          <input
+          <Input
             style={{
               fontSize,
               display: 'block',
               color,
             }}
+            className="focus-visible:ring-0"
             onChange={handleChange}
             type="text"
             value={text}
           />
         ) : (
-          <span
+          <Label
             style={{
               fontSize,
               display: 'block',
@@ -105,7 +113,7 @@ const Text = (props: Props) => {
             }}
           >
             {text}
-          </span>
+          </Label>
         )}
       </div>
     </div>

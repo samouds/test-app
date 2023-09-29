@@ -13,15 +13,6 @@ type Props = {
   top?: number | string;
   type?: string;
   selectedId?: number | null;
-  onSelected?: (id: null | number) => void;
-  onChange?: (item: {
-    id: number;
-    text?: string;
-    type?: string;
-    top?: number | string;
-    left?: number | string;
-    position?: string;
-  }) => void;
 };
 
 const Container = (props: Props) => {
