@@ -1,0 +1,18 @@
+{
+    "files":[{
+        "id": 1000,
+        "text":"Dummy text",
+        "type":"text",
+        "top":200,
+        "fontSize":10,
+        "color": "blue"
+    }, 
+       {
+        "id": 1001,
+        "src":"https://as2.ftcdn.net/v2/jpg/03/64/21/11/1000_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg",
+        "type": "image",
+        "top": 10,
+        "left": 20
+    }
+]
+}

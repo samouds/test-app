@@ -9,7 +9,6 @@ type Props = {
   position?: 'static' | 'absolute';
   left?: number | string;
   top?: number | string;
-  isSelected?: boolean;
 };
 
 const Image = ({
@@ -27,6 +26,7 @@ const Image = ({
       type: ElementTypes.IMAGE,
       item: { src, alt, left, top, position, id, type: ElementTypes.IMAGE },
     }));
+    console.log("drag", id)
   return (
     <div>
       <img

@@ -1,7 +1,8 @@
-import { ChangeEventHandler, useRef } from 'react';
+import { ChangeEventHandler, useEffect, useRef } from 'react';
 import { ElementTypes } from '../config/Constants';
 import { ConnectDragPreview, ConnectDragSource, useDrag } from 'react-dnd';
 import useOnClickOutsideCanvas from '../hooks/useOnClickOutsideCanvas';
+import useStore from '../store';
 
 type Props = {
   fontSize?: number;
@@ -12,19 +13,20 @@ type Props = {
   left?: number | string;
   top?: number | string;
   type?: string;
-  selectedId?: number | null;
-  onSelected?: (selectedId: number | null) => void;
-  onChange?: (item: {
-    id: number;
-    text?: string;
-    type?: string;
-    top?: number | string;
-    left?: number | string;
-    position?: string;
-  }) => void;
 };
 
+
 const Text = (props: Props) => {
+
+  const { selectedItem } = useStore()
+  console.log("selectedItem ", selectedItem)
+
+  useEffect(()=>{
+
+  },[selectedItem])
+
+
+
   const {
     fontSize = 16,
     id = null,
@@ -32,10 +34,7 @@ const Text = (props: Props) => {
     color = 'blue',
     text = 'The Quick Brown Fox',
     left = 'auto',
-    selectedId,
-    onSelected,
     top = 'auto',
-    onChange,
   } = props;
   const [{ isDragging }, drag]: [{ isDragging: boolean }, ConnectDragSource, ConnectDragPreview] =
     useDrag(() => ({
@@ -44,20 +43,20 @@ const Text = (props: Props) => {
     }));
 
   const wrapRef = useRef(null);
-
-  const isSelected = !!selectedId && selectedId === id;
+  const { updateItem, selectItem } = useStore()
+  const isSelected = !!selectedItem?.id && selectedItem?.id === id;
 
   const onOutsideClick = () => {
-    console.log('outside clicked');
-    if (isSelected && typeof onSelected !== 'undefined') {
-      onSelected(null);
+    if (isSelected) {
+      selectItem(null);
     }
   };
 
   const onClick = () => {
-    if (typeof onSelected !== 'undefined' && id !== null) {
-      onSelected(null);
-      onSelected(id);
+    if (id !== null) {
+      selectItem(null);
+      id && selectItem(id)
+
     }
   };
 
@@ -65,8 +64,8 @@ const Text = (props: Props) => {
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     e.preventDefault();
-    if (isSelected && typeof onChange !== 'undefined' && e.target !== null) {
-      onChange({
+    if (isSelected && e.target !== null) {
+      updateItem({
         id: id,
         text: e.target.value,
       });
@@ -77,7 +76,7 @@ const Text = (props: Props) => {
       onClick={onClick}
       ref={drag}
       style={{
-        outline: selectedId && selectedId === id ? '1px solid red' : 'none',
+        outline: selectedItem?.id && selectedItem?.id === id ? '1px solid red' : 'none',
         opacity: isDragging ? 0.5 : 1,
         position: position,
         left: left,
